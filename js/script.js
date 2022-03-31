@@ -3,12 +3,41 @@
  */
 const buttonAdd = document.querySelector(".add-convertor__box");
 
-const inputByn = document.querySelector("#BYN");
-const inputUsd = document.querySelector("#USD");
-const inputEur = document.querySelector("#EUR");
-
-const availableInputs = ["USD", "BYN", "EUR"].map((idItem) => {
-	document.createElement('input', { type: 'number', id: idItem, className: 'form-control', value: '' });
+const availableInputs = [
+  "USD",
+  "EUR",
+  "BYN",
+  "AMD",
+  "AUD",
+  "BGN",
+  "BYN",
+  "CAD",
+  "CHF",
+  "CNY",
+  "CZK",
+  "DKK",
+  "EUR",
+  "GBP",
+  "IRR",
+  "ISK",
+  "JPY",
+  "KGS",
+  "KWD",
+  "KZT",
+  "MDL",
+  "NOK",
+  "NZD",
+  "PLN",
+  "RUB",
+  "SEK",
+  "SGD",
+  "TRY",
+  "UAH",
+  "USD",
+  "XDR",
+].map((id) => {
+  document.querySelector("id");
+  return id;
 });
 
 const url = "https://www.nbrb.by/api/exrates/rates?periodicity=0";
@@ -18,19 +47,19 @@ const containerToAdd = document.querySelector(".add__container");
 
 function toByn(currency, { rate, scale }) {
   return (currency * (rate * scale)).toFixed(2);
-};
+}
 
 function fromByn(byn, { rate, scale }) {
   return (byn / (rate * scale)).toFixed(2);
-};
+}
 
 function recalcAll(byn, availableInputs, convertionMapBynVal) {
   availableInputs.forEach((input) => {
     const currencyName = input?.id;
     const currencyToByn = convertionMapBynVal[currencyName];
     input.value = fromByn(byn, currencyToByn);
-  })
-};
+  });
+}
 
 async function getCours() {
   try {
@@ -51,7 +80,7 @@ async function getCours() {
       rate: 1,
       scale: 1,
     };
-  
+
     inputAll.addEventListener("input", (e) => {
       const targetInput = e.target;
       const currencyName = targetInput.id;
@@ -65,31 +94,41 @@ async function getCours() {
       );
       recalcAll(currencyInByn, allInputsExceptCurrent, convertionMapBynVal);
     });
-	  
-	  officialCurrencies.forEach((item) => {
-		  const createDivConvertorBox = document.createElement("div");
-		  const createInput = document.createElement("input");
-		  const createDivCurrency = document.createElement("div");
-		  const createSpanCountryFlag = document.createElement("span");
-		  const createSpanValName = document.createElement("span");
 
-		  createDivConvertorBox.className = "convertor__box row";
-		  createInput.type = "number";
-		  createInput.id = item.Cur_Abbreviation;
-		  createInput.className = "form-control";
-		  createInput.value = "";
-		  createDivCurrency.className = "currency row";
-		  createSpanCountryFlag.className = "country-flag flag-usd";
-		  createSpanValName.className = "val-name";
-		  createSpanValName.innerText = item.Cur_Abbreviation;
+    function creaateElement(tagName, options = {}) {
+      const el = document.createElement(tagName);
+      Object.entries(options).forEach(([optionName, optionValue]) => {
+        el[optionName] = optionValue;
+      });
+      return el;
+    }
+    officialCurrencies.forEach((item) => {
+      const createDivConvertorBox = creaateElement("div", {
+        className: "convertor__box row",
+      });
+      const createInput = creaateElement("input", {
+        type: "number",
+        id: item.Cur_Abbreviation,
+        className: "form-control",
+        value: "",
+      });
+      const createDivCurrency = creaateElement("div", {
+        className: "currency row",
+      });
+      const createSpanCountryFlag = creaateElement("span", {
+        className: "country-flag flag-usd",
+      });
+      const createSpanValName = creaateElement("span", {
+        className: "val-name",
+        innerText: item.Cur_Abbreviation,
+      });
 
-		  containerToAdd.appendChild(createDivConvertorBox);
-		  createDivConvertorBox.appendChild(createInput);
-		  createDivConvertorBox.appendChild(createDivCurrency);
-		  createDivCurrency.appendChild(createSpanCountryFlag);
-		  createDivCurrency.appendChild(createSpanValName);
-	  });
-	 
+      containerToAdd.appendChild(createDivConvertorBox);
+      createDivConvertorBox.appendChild(createInput);
+      createDivConvertorBox.appendChild(createDivCurrency);
+      createDivCurrency.appendChild(createSpanCountryFlag);
+      createDivCurrency.appendChild(createSpanValName);
+    });
   } catch (error) {
     console.log(error);
   }
